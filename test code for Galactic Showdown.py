@@ -34,7 +34,10 @@ moveBottomRight = False
 
 #virus movement
 virusLeft = False
-virusRight = False
+virusRight = True
+
+#to get the viruses to being moving at the very start
+virusStart = True
 
 #draw ship
 ship = Actor("spaceship1")
@@ -52,19 +55,20 @@ lazers = []
 
 # a list for the viruses
 viruses = []
-
+for i in range(3):
+    viruses.append(Actor('virus', (random.randint(200,800), random.randint(0,200))))
 #a list for enemy lazers
 Elazers = []
 
 #get the enemy to spawn on both sides of the screen
-viruses.append(Actor("virus"))
-spawn = random.randint (1,2)
-if spawn == 1:
-    viruses[-1].x = 40
-    viruses[-1].y = random.randint(1,200)
-elif spawn == 2:
-    viruses[-1].x = 980
-    viruses[-1].y = random.randint(1,200)
+#viruses.append(Actor("virus"))
+#spawn = random.randint (1,2)
+#if spawn == 1:
+#    viruses[-1].x = 40
+#    viruses[-1].y = random.randint(1,200)
+#elif spawn == 2:
+#    viruses[-1].x = 980
+#    viruses[-1].y = random.randint(1,200)
         
 #creates the start screen image
 startScreen = Actor("mainscreen")
@@ -137,6 +141,8 @@ def on_mouse_up(pos, button):
     global button1Value
     global button2Value
     global button2Color
+    global button3Value
+    global button3Color
     
     if gameState == 'start screen':
         if button1Rect.collidepoint(pos):
@@ -171,7 +177,7 @@ def on_mouse_up(pos, button):
     
 def update():
     global gameState, ship, moveLeft, moveRight, moveUp, moveDown, speed, lazer, lazers, virus, viruses, virusLeft, virusRight
-    global score, spawn, counter, endCount, delayTime, futureTime, Elazer, Elazers, lives, gameTime
+    global score, spawn, counter, endCount, delayTime, futureTime, Elazer, Elazers, lives, gameTime, virusStart
     import random
     #moves the ship
     if gameState == 'game':
@@ -213,16 +219,18 @@ def update():
                 
         #gets the virus to move side to side
         for virus in viruses:
-            '''this code took way too long to figure out...'''
-            if spawn == 1:
-                virus.x += 15
-                if virus.x > 950:
-                    virus.x = 10
-            elif spawn == 2:
-                virus.x -= 15
-                if virus.x < 50:
-                    virus.x = 990
-            '''
+            '''this code took way too long to figure out... little did I know you would expain it the very next day
+                still worth the experince though'''
+#            if virusStart == True:
+#                virus.x += 20
+#            for virus in viruses:
+#                if virus.x > 950:
+#                    virusStart = False
+#                    virus.x -= 20
+#                elif virus.x < 0:
+#                    virus.x += 20
+#                    virus.x = False
+            
             if virus.x > 950:
                 virusLeft = True
             elif virus.x < 50:
@@ -230,14 +238,14 @@ def update():
                 
             if virus.x < 50:
                 virusLeft = False
-            if virus.x > 950:
+            elif virus.x > 950:
                 virusRight = False
                 
             if virusLeft == True:
                 virus.x -=20
             elif virusRight == True:
                 virus.x += 20
-            '''
+            
             
             #detect collision with lazer and virus
             for lazer in lazers:
@@ -246,12 +254,10 @@ def update():
                     lazers.remove(lazer) #remove the lazer and virus after hitting
                     viruses.remove(virus)
                     music.play_once("enemy hit")
-                    if len(viruses) < 3:
-                        viruses.append(Actor("virus"))
-                        viruses.append(Actor("virus"))
-                    else:
-                        gameState = "error"
-                        
+                    if len(viruses) < 3: # makes sure there can only be a maximun of 4 viruses at once
+                        viruses.append(Actor('virus', (random.randint(200,800), random.randint(0,200))))
+                        viruses.append(Actor('virus', (random.randint(200,800), random.randint(0,200))))
+                    
             #detect collision with enemy lazer and ship      
             for Elazer in Elazers:
                 if ship.colliderect(Elazer):
@@ -261,16 +267,15 @@ def update():
                     if lives < 1:
                         music.play_once("gameover sound")
                         
-                    else:
-                        gameState = "error"
+       
                     
-            '''giving an error'''       
+            '''giving an error, basically want lazers to cancle eachother out'''       
            # for lazer in lazers:
            #     if Elazer.colliderect(lazer):
            #         lazers.remove(lazer)
            #         Elazers.remove(Elazer)
                     
-
+        #a time for the game
         if futureTime < time.time():
             if counter < endCount:
                 counter += 1;
@@ -281,13 +286,13 @@ def update():
                 print (counter)
                 if counter == 5:
                     counter = 0
-                    print("shoot")
-
-        if counter == 5:
-            Elazers.append(Actor('elazer'))
-            Elazers[-1].x = virus.x
-            Elazers[-1].y = virus.y
-            music.play_once("elazer sound")
+                    print("run!")
+        for virus in viruses: #took a while but this makes every virus in the list "viruses" shoot and not just one
+            if counter == 5:
+                Elazers.append(Actor('elazer'))
+                Elazers[-1].x = virus.x
+                Elazers[-1].y = virus.y
+                music.play_once("elazer sound")
 
 def draw():
     global gameState,shipX,shipY, lazer, lazers, virus, viruses, Elazer, Elazers, gameTime
@@ -315,14 +320,11 @@ def draw():
         for Elazer in Elazers:
             Elazer.draw()
     
-    elif gameState == "error":
-        screen.fill((255, 204, 203))
-        screen.draw.text ("Something is wrong", center=(WIDTH/2, HEIGHT/2), color="red")
+    #elif gameState == "error":
+     #   screen.fill((255, 204, 203))
+     #   screen.draw.text ("Something is wrong", center=(WIDTH/2, HEIGHT/2), color="red")
         
         
     
 startUp()
-    
-    
-    
     
