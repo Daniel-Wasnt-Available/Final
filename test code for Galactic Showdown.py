@@ -78,6 +78,10 @@ startScreen.pos = (WIDTH/2, HEIGHT/2)
 background = Actor("background")
 background.pos = (WIDTH/2, HEIGHT/2)
 
+#creates the end screen page
+endscreen = Actor("endscreen")
+endscreen.post = (WIDTH/2, HEIGHT/2)
+
 #start button
 button1Draw = [290, 380, 420, 120]
 button1Rect = Rect(button1Draw) 
@@ -266,6 +270,7 @@ def update():
                     music.play_once("ship hit")
                     if lives < 1:
                         music.play_once("gameover sound")
+                        gameState = "end"
                         
        
                     
@@ -295,7 +300,7 @@ def update():
                 music.play_once("elazer sound")
 
 def draw():
-    global gameState,shipX,shipY, lazer, lazers, virus, viruses, Elazer, Elazers, gameTime
+    global gameState,shipX,shipY, lazer, lazers, virus, viruses, Elazer, Elazers, gameTime, endscreen
     
     if gameState == 'start screen':
         startScreen.draw()
@@ -319,12 +324,15 @@ def draw():
         #draw enemy lazer
         for Elazer in Elazers:
             Elazer.draw()
+            
+    elif gameState == 'end':
+        endscreen.draw()
+            
     
-    #elif gameState == "error":
-     #   screen.fill((255, 204, 203))
-     #   screen.draw.text ("Something is wrong", center=(WIDTH/2, HEIGHT/2), color="red")
+    else: #just to let me know if the code fails somewhere
+        screen.fill((255, 204, 203))
+        screen.draw.text ("Something is wrong", center=(WIDTH/2, HEIGHT/2), color="red")
         
         
-    
 startUp()
     
