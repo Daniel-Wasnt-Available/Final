@@ -5,7 +5,7 @@ HEIGHT = 700
 #make a power up that increases the amount of bullets you can shoot
 import random
 import time
-gameScreen = ''
+gameState = ''
 lives = 5
 score = 0
 shipX = 500
@@ -87,6 +87,18 @@ button1Draw = [290, 380, 420, 120]
 button1Rect = Rect(button1Draw) 
 button1Value = False  
 button1Color = 'green'
+
+#leaderboard button
+button3Draw = [540, 490, 420, 90]
+button3Rect = Rect(button3Draw) 
+button3Value = False  
+button3Color = 'green'
+
+#Play Again button
+button2Draw = [60, 490, 420, 90]
+button2Rect = Rect(button2Draw) 
+button2Value = False  
+button2Color = 'green'
         
 def startUp():
     '''Run this to get the program ready to run'''
@@ -139,7 +151,8 @@ def on_key_up(key):
     
 def on_mouse_up(pos, button):
     '''Pygame Special Event Hook - Runs when the mouse button is released'''
-    global gameState
+    global gameState, lives, score, shipX, shipY, speed, endCount, delayTime, futureTime, counter, gameTime, gameState
+    global virusRight, virusLeft, virusStart, Elazers, lazers, viruses
     import random
     global button1Color
     global button1Value
@@ -147,8 +160,10 @@ def on_mouse_up(pos, button):
     global button2Color
     global button3Value
     global button3Color
+    global button4Value
+    global button4Color
     
-    if gameState == 'start screen':
+    if gameState == 'start screen': #to make sure buttons don't overlap
         if button1Rect.collidepoint(pos):
             '''Start game button and rules button. turns out I can't have two gameState == 'startScreen's in one
             function so I put the both together here'''
@@ -166,7 +181,49 @@ def on_mouse_up(pos, button):
                 gameState = 'game'
                 #music.play_once('buttonclicked')
                 
-        #rules button
+        
+                
+    if gameState == "end":
+         #PLay again button
+        if button2Rect.collidepoint(pos):
+            if  button2Value == True:
+                button2Color = (255, 250, 205)
+                button2Value = False
+                #music.play_once('buttonclicked')
+                
+            else:
+                button2Value = True
+                #music.play_once('buttonclicked')
+                gameState = "start screen"
+                lives = 5
+                score = 0
+                shipX = 500
+                shipY = 550
+                speed = 20
+                endCount = 5
+                delayTime = 1
+                futureTime = 5
+                counter = 0
+                gameTime = 0
+                virusLeft = False
+                virusRight = True
+                virusStart = True
+                lazers = []
+                viruses = []
+                Elazers = []
+                for i in range(3):
+                    viruses.append(Actor('virus', (random.randint(200,800), random.randint(0,200))))
+                moveLeft = False
+                moveRight = False
+                moveUp = False
+                moveDown = False
+                moveTopLeft = False
+                moveTopRight = False
+                moveBottomLeft = False
+                moveBottomRight = False
+                
+        
+        #leaderboard button
         elif button3Rect.collidepoint(pos):
             if  button3Value == True:
                 button3Color = (255, 250, 205)
@@ -178,6 +235,8 @@ def on_mouse_up(pos, button):
                 button3Value = True
                 gameState = 'rules'
                 #music.play_once('buttonclicked')
+                
+                
     
 def update():
     global gameState, ship, moveLeft, moveRight, moveUp, moveDown, speed, lazer, lazers, virus, viruses, virusLeft, virusRight
@@ -261,6 +320,8 @@ def update():
                     if len(viruses) < 3: # makes sure there can only be a maximun of 4 viruses at once
                         viruses.append(Actor('virus', (random.randint(200,800), random.randint(0,200))))
                         viruses.append(Actor('virus', (random.randint(200,800), random.randint(0,200))))
+                else:
+                    gameState == "error"
                     
             #detect collision with enemy lazer and ship      
             for Elazer in Elazers:
@@ -300,6 +361,7 @@ def update():
                 music.play_once("elazer sound")
 
 def draw():
+    #Draws everything in each game State
     global gameState,shipX,shipY, lazer, lazers, virus, viruses, Elazer, Elazers, gameTime, endscreen
     
     if gameState == 'start screen':
@@ -327,9 +389,10 @@ def draw():
             
     elif gameState == 'end':
         endscreen.draw()
-            
+        #screen.draw.filled_rect(button2Rect, button2Color)
+        #screen.draw.filled_rect(button4Rect, button4Color)   
     
-    else: #just to let me know if the code fails somewhere
+    elif gameState == "error": #just to let me know if the code fails somewhere
         screen.fill((255, 204, 203))
         screen.draw.text ("Something is wrong", center=(WIDTH/2, HEIGHT/2), color="red")
         
