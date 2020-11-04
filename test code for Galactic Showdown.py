@@ -8,8 +8,6 @@ import time
 gameState = ''
 lives = 5
 score = 0
-shipX = 500
-shipY = 550
 speed = 20
 
 #timer
@@ -82,11 +80,21 @@ background.pos = (WIDTH/2, HEIGHT/2)
 endscreen = Actor("endscreen")
 endscreen.post = (WIDTH/2, HEIGHT/2)
 
+#rules screen
+rulescreen = Actor("rules")
+rulescreen.post = (WIDTH/2, HEIGHT/2)
+
 #start button
 button1Draw = [290, 380, 420, 120]
 button1Rect = Rect(button1Draw) 
 button1Value = False  
 button1Color = 'green'
+
+#Play Again button
+button2Draw = [60, 490, 420, 90]
+button2Rect = Rect(button2Draw) 
+button2Value = False  
+button2Color = 'green'
 
 #leaderboard button
 button3Draw = [540, 490, 420, 90]
@@ -94,11 +102,11 @@ button3Rect = Rect(button3Draw)
 button3Value = False  
 button3Color = 'green'
 
-#Play Again button
-button2Draw = [60, 490, 420, 90]
-button2Rect = Rect(button2Draw) 
-button2Value = False  
-button2Color = 'green'
+#rules button
+button4Draw = [300, 550, 400, 65]
+button4Rect = Rect(button4Draw) 
+button4Value = False  
+button4Color = 'green'
         
 def startUp():
     '''Run this to get the program ready to run'''
@@ -181,6 +189,20 @@ def on_mouse_up(pos, button):
                 gameState = 'game'
                 #music.play_once('buttonclicked')
                 
+        if button4Rect.collidepoint(pos):
+            #rules button
+            if  button4Value == True:
+                button4Color = 'light green'
+                button4Value = False
+                gameState = 'rules'
+                #music.play_once('buttonclicked')
+                
+            else:
+                button4Color == 'green'
+                button4Value = True
+                gameState = 'rules'
+                #music.play_once('buttonclicked')
+                
         
                 
     if gameState == "end":
@@ -197,8 +219,6 @@ def on_mouse_up(pos, button):
                 gameState = "start screen"
                 lives = 5
                 score = 0
-                shipX = 500
-                shipY = 550
                 speed = 20
                 endCount = 5
                 delayTime = 1
@@ -221,6 +241,7 @@ def on_mouse_up(pos, button):
                 moveTopRight = False
                 moveBottomLeft = False
                 moveBottomRight = False
+                ship.pos = (500,500)
                 
         
         #leaderboard button
@@ -336,10 +357,10 @@ def update():
        
                     
             '''giving an error, basically want lazers to cancle eachother out'''       
-           # for lazer in lazers:
-           #     if Elazer.colliderect(lazer):
-           #         lazers.remove(lazer)
-           #         Elazers.remove(Elazer)
+        for lazer in lazers:
+            if Elazer.colliderect(lazer):
+                lazers.remove(lazer)
+                Elazers.remove(Elazer)
                     
         #a time for the game
         if futureTime < time.time():
@@ -362,10 +383,11 @@ def update():
 
 def draw():
     #Draws everything in each game State
-    global gameState,shipX,shipY, lazer, lazers, virus, viruses, Elazer, Elazers, gameTime, endscreen
+    global gameState,shipX,shipY, lazer, lazers, virus, viruses, Elazer, Elazers, gameTime, endscreen, rulescreen
     
     if gameState == 'start screen':
         startScreen.draw()
+        
         
     
     elif gameState == 'game':
@@ -386,6 +408,9 @@ def draw():
         #draw enemy lazer
         for Elazer in Elazers:
             Elazer.draw()
+    
+    elif gameState == 'rules':
+        rulescreen.draw()
             
     elif gameState == 'end':
         endscreen.draw()
