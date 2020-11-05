@@ -6,7 +6,7 @@ HEIGHT = 700
 import random
 import time
 gameState = ''
-lives = 5
+lives = 3
 score = 0
 speed = 20
 
@@ -49,7 +49,7 @@ ship.pos = (500,500)
 Elazer = Actor("elazer")
 
 #draw lazer
-lazer = Actor("lazer")
+lazer = Actor('lazer1')
 
 #a list of lazer - so we can shoot multiple lazers at once
 lazers = []
@@ -171,7 +171,7 @@ def on_key_down(key):
             
     #moved this to on key down instead of update so the player cannot hold down the shoot button
         if key == keys.SPACE:
-            if len(lazers) < 3: #you can only have 5 lazers at once on the screen
+            if len(lazers) < 2: #you can only have 5 lazers at once on the screen
                 lazers.append(Actor('lazer'))
                 lazers[-1].x = ship.x #we use -1 to take the last element in the list
                 lazers[-1].y = ship.y
@@ -199,7 +199,7 @@ def on_mouse_up(pos, button):
     '''Pygame Special Event Hook - Runs when the mouse button is released'''
     global gameState, lives, score, speed, endCount, delayTime, futureTime, counter, gameTime, gameState
     global virusRight, virusLeft, virusStart, Elazers, lazers, viruses, moveLeft, moveRight, moveDown, moveUp, moveTopLeft
-    global moveTopRight, moveBottomLeft, moveBottomRight, characterOption
+    global moveTopRight, moveBottomLeft, moveBottomRight, lazer
     import random
     global button1Color
     global button1Value
@@ -260,6 +260,7 @@ def on_mouse_up(pos, button):
             if  button5Value == True:
                 button5Color = 'light green'
                 button5Value = False
+                lazer.image = "lazer2"
                 ship.image = "spaceship2"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
@@ -267,6 +268,7 @@ def on_mouse_up(pos, button):
             else:
                 button5Color == 'green'
                 button5Value = True
+                lazer.image = "lazer2"
                 ship.image = "spaceship2"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
@@ -276,6 +278,7 @@ def on_mouse_up(pos, button):
             if  button6Value == True:
                 button6Color = 'light green'
                 button6Value = False
+                lazer.image = "lazer3"
                 ship.image = "spaceship3"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
@@ -283,6 +286,7 @@ def on_mouse_up(pos, button):
             else:
                 button6Color == 'green'
                 button6Value = True
+                lazer.image = "lazer3"
                 ship.image = "spaceship3"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
@@ -292,6 +296,7 @@ def on_mouse_up(pos, button):
             if  button7Value == True:
                 button7Color = 'light green'
                 button7Value = False
+                lazer.image = "lazer1"
                 ship.image = "spaceship1"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
@@ -299,6 +304,7 @@ def on_mouse_up(pos, button):
             else:
                 button7Color == 'green'
                 button7Value = True
+                lazer.image = "lazer1"
                 ship.image = "spaceship1"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
@@ -308,6 +314,7 @@ def on_mouse_up(pos, button):
             if  button8Value == True:
                 button8Color = 'light green'
                 button8Value = False
+                lazer.image = "lazer4"
                 ship.image = "spaceship4"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
@@ -315,6 +322,7 @@ def on_mouse_up(pos, button):
             else:
                 button8Color == 'green'
                 button8Value = True
+                lazer.image = "lazer4"
                 ship.image = "spaceship4"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
