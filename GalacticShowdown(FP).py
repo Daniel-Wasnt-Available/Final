@@ -10,6 +10,8 @@ lives = 5
 score = 0
 speed = 20
 
+#all sounds are from http://www.orangefreesounds.com/category/music/
+
 #timer
 endCount = 5
 delayTime = 1
@@ -19,7 +21,7 @@ print('\r\nCurrent Time - ', time.time())
 futureTime - time.time() + delayTime
 print(futureTime)
 gameTime = 0
-characterOption = '' #how to make this a variable?
+
 
 #spaceship movement
 moveLeft = False
@@ -39,7 +41,7 @@ virusRight = True
 virusStart = True
 
 #draw ship
-ship = Actor(characterOption)
+ship = Actor('spaceship1')
 ship.pos = (500,500)
 
 
@@ -113,6 +115,13 @@ button4Rect = Rect(button4Draw)
 button4Value = False  
 button4Color = 'green'
 
+#exit button from rules screen
+button9Draw = [880, 590, 85, 70]
+button9Rect = Rect(button9Draw) 
+button9Value = False  
+button9Color = 'green'
+
+
 #Vigilante button
 button5Draw = [50, 200, 180, 200]
 button5Rect = Rect(button5Draw) 
@@ -162,7 +171,7 @@ def on_key_down(key):
             
     #moved this to on key down instead of update so the player cannot hold down the shoot button
         if key == keys.SPACE:
-            if len(lazers) < 5: #you can only have 5 lazers at once on the screen
+            if len(lazers) < 3: #you can only have 5 lazers at once on the screen
                 lazers.append(Actor('lazer'))
                 lazers[-1].x = ship.x #we use -1 to take the last element in the list
                 lazers[-1].y = ship.y
@@ -208,6 +217,8 @@ def on_mouse_up(pos, button):
     global button7Color
     global button8Value
     global button8Color
+    global button9Value
+    global button9Color
     
     if gameState == 'start screen': #to make sure buttons don't overlap
         if button1Rect.collidepoint(pos):
@@ -243,53 +254,68 @@ def on_mouse_up(pos, button):
                 
     if gameState == 'characterscreen': #the ship selection screen
         if button5Rect.collidepoint(pos):
-            '''Start game button and rules button. turns out I can't have two gameState == 'startScreen's in one
-            function so I put the both together here'''
+            '''this will take the user to select a ship'''
 
             # button
             if  button5Value == True:
                 button5Color = 'light green'
                 button5Value = False
-                characterOption = "spaceship2"
+                ship.image = "spaceship2"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
                 
             else:
                 button5Color == 'green'
                 button5Value = True
-                characterOption = "spaceship2"
+                ship.image = "spaceship2"
+                gameState = 'game'
+                #music.play_once('buttonclicked')
+              
+        elif button6Rect.collidepoint(pos):
+        # button
+            if  button6Value == True:
+                button6Color = 'light green'
+                button6Value = False
+                ship.image = "spaceship3"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
                 
-        if button7Rect.collidepoint(pos):
+            else:
+                button6Color == 'green'
+                button6Value = True
+                ship.image = "spaceship3"
+                gameState = 'game'
+                #music.play_once('buttonclicked')
+                
+        elif button7Rect.collidepoint(pos):
             # button
             if  button7Value == True:
                 button7Color = 'light green'
                 button7Value = False
-                characterOption = "spaceship1"
+                ship.image = "spaceship1"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
                 
             else:
                 button7Color == 'green'
                 button7Value = True
-                characterOption = "spaceship1"
+                ship.image = "spaceship1"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
                 
-        if button8Rect.collidepoint(pos):
+        elif button8Rect.collidepoint(pos):
             # button
             if  button8Value == True:
                 button8Color = 'light green'
                 button8Value = False
-                characterOption = "spaceship4"
+                ship.image = "spaceship4"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
                 
             else:
                 button8Color == 'green'
                 button8Value = True
-                characterOption = "spaceship4"
+                ship.image = "spaceship4"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
                 
@@ -331,9 +357,9 @@ def on_mouse_up(pos, button):
                 moveBottomRight = False
                 ship.pos = (500,500)
                 
-        
+    if button3Rect.collidepoint(pos):
         #leaderboard button
-        elif button3Rect.collidepoint(pos):
+        if button3Rect.collidepoint(pos):
             if  button3Value == True:
                 button3Color = (255, 250, 205)
                 button3Value = False
@@ -345,6 +371,19 @@ def on_mouse_up(pos, button):
                 gameState = 'rules'
                 #music.play_once('buttonclicked')
                 
+    if button9Rect.collidepoint(pos):
+        #leaderboard button
+        if button9Rect.collidepoint(pos):
+            if  button9Value == True:
+                button9Color = (255, 250, 205)
+                button9Value = False
+                gameState = 'start screen'
+                #music.play_once('buttonclicked')
+
+            else:
+                button9Value = True
+                gameState = 'start screen'
+                #music.play_once('buttonclicked')
                 
     
 def update():
@@ -425,6 +464,7 @@ def update():
                     score += 100
                     lazers.remove(lazer) #remove the lazer and virus after hitting
                     viruses.remove(virus)
+                    music.set_volume(0.2)
                     music.play_once("enemy hit")
                     if len(viruses) < 3: # makes sure there can only be a maximun of 4 viruses at once
                         viruses.append(Actor('virus', (random.randint(200,800), random.randint(0,200))))
@@ -437,6 +477,7 @@ def update():
                 if ship.colliderect(Elazer):
                     lives -= 1
                     Elazers.remove(Elazer)
+                    music.set_volume(0.2)
                     music.play_once("ship hit")
                     if lives < 1:
                         music.play_once("gameover sound")
@@ -470,6 +511,7 @@ def update():
                 Elazers.append(Actor('elazer'))
                 Elazers[-1].x = virus.x
                 Elazers[-1].y = virus.y
+                music.set_volume(0.2)
                 music.play_once("elazer sound")
 
 def draw():
@@ -502,16 +544,16 @@ def draw():
     
     elif gameState == 'rules':
         rulescreen.draw()
+        #screen.draw.filled_rect(button9Rect, button9Color)
         
     elif gameState == 'characterscreen':
         characterscreen.draw()
-        screen.draw.filled_rect(button5Rect, button5Color)
-        screen.draw.filled_rect(button6Rect, button6Color)
-        screen.draw.filled_rect(button7Rect, button7Color)
-        screen.draw.filled_rect(button8Rect, button8Color)
+        
             
     elif gameState == 'end':
         endscreen.draw()
+        screen.draw.text (str((gameTime)), center=(800, 315), color="purple", fontsize = 110)
+        screen.draw.text (str((score)), center=(800, 420), color="beige", fontsize = 110)
         #screen.draw.filled_rect(button2Rect, button2Color)
         #screen.draw.filled_rect(button4Rect, button4Color)   
     
