@@ -263,7 +263,7 @@ def on_mouse_up(pos, button):
                 gameState = 'rules'
                 #music.play_once('buttonclicked')
                 
-    if gameState == 'characterscreen': #the ship selection screen
+    elif gameState == 'characterscreen': #the ship selection screen
         if button5Rect.collidepoint(pos):
             '''this will take the user to select a ship'''
 
@@ -307,16 +307,16 @@ def on_mouse_up(pos, button):
             if  button7Value == True:
                 button7Color = 'light green'
                 button7Value = False
-                lazer.image = "lazer"
-                ship.image = "spaceship1"
+                lazer.image = "lazer4"
+                ship.image = "spaceship4"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
                 
             else:
                 button7Color == 'green'
                 button7Value = True
-                lazer.image = "lazer"
-                ship.image = "spaceship1"
+                lazer.image = "lazer4"
+                ship.image = "spaceship4"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
                 
@@ -325,16 +325,16 @@ def on_mouse_up(pos, button):
             if  button8Value == True:
                 button8Color = 'light green'
                 button8Value = False
-                lazer.image = "lazer4"
-                ship.image = "spaceship4"
+                lazer.image = "lazer"
+                ship.image = "spaceship1"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
                 
             else:
                 button8Color == 'green'
                 button8Value = True
-                lazer.image = "lazer4"
-                ship.image = "spaceship4"
+                lazer.image = "lazer"
+                ship.image = "spaceship1"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
                 
@@ -551,8 +551,10 @@ def update():
                 music.play_once("elazer sound")
         
         for ammo in ammos:
+            print(counter)
             if counter == 2:
                 ammos.append(Actor('ammo', (random.randint(100,900), 100)))
+            
 
 def draw():
     #Draws everything in each game State
