@@ -49,7 +49,13 @@ ship.pos = (500,500)
 Elazer = Actor("elazer")
 
 #draw lazer
-lazer = Actor('lazer1')
+lazer = Actor('lazer')
+
+#draw heart power up
+heart = Actor('heart')
+
+#draw ammo power up
+ammo = Actor ('ammo')
 
 #a list of lazer - so we can shoot multiple lazers at once
 lazers = []
@@ -60,6 +66,11 @@ for i in range(3):
     viruses.append(Actor('virus', (random.randint(200,800), random.randint(0,200))))
 #a list for enemy lazers
 Elazers = []
+
+#list for heart power up
+hearts = []
+#list for ammo power up
+ammos = []
 
 #get the enemy to spawn on both sides of the screen
 #viruses.append(Actor("virus"))
@@ -296,7 +307,7 @@ def on_mouse_up(pos, button):
             if  button7Value == True:
                 button7Color = 'light green'
                 button7Value = False
-                lazer.image = "lazer1"
+                lazer.image = "lazer"
                 ship.image = "spaceship1"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
@@ -304,7 +315,7 @@ def on_mouse_up(pos, button):
             else:
                 button7Color == 'green'
                 button7Value = True
-                lazer.image = "lazer1"
+                lazer.image = "lazer"
                 ship.image = "spaceship1"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
@@ -396,7 +407,7 @@ def on_mouse_up(pos, button):
     
 def update():
     global gameState, ship, moveLeft, moveRight, moveUp, moveDown, speed, lazer, lazers, virus, viruses, virusLeft, virusRight
-    global score, spawn, counter, endCount, delayTime, futureTime, Elazer, Elazers, lives, gameTime, virusStart
+    global score, spawn, counter, endCount, delayTime, futureTime, Elazer, Elazers, lives, gameTime, virusStart, ammo, hearts, ammos
     import random
     #moves the ship
     if gameState == 'game':
@@ -436,6 +447,12 @@ def update():
             else:
                 Elazer.y += 30
                 
+        for ammo in ammos:
+            if ammo.y > 700:
+                ammos.remove(ammo)
+            else:
+                ammo.y += 10
+                
         #gets the virus to move side to side
         for virus in viruses:
             '''this code took way too long to figure out... little did I know you would expain it the very next day
@@ -474,9 +491,20 @@ def update():
                     viruses.remove(virus)
                     music.set_volume(0.2)
                     music.play_once("enemy hit")
-                    if len(viruses) < 3: # makes sure there can only be a maximun of 4 viruses at once
-                        viruses.append(Actor('virus', (random.randint(200,800), random.randint(0,200))))
-                        viruses.append(Actor('virus', (random.randint(200,800), random.randint(0,200))))
+                    viruses.append(Actor('virus', (random.randint(200,800), random.randint(0,200)))) # new virus every time one is killed
+                    if score > 1000 and score < 2000:
+                        if len(viruses) < 4: # makes sure there can only be a maximun of 4 viruses at once
+                            viruses.append(Actor('virus', (random.randint(200,800), random.randint(0,200))))
+                    elif score > 2000 and score < 3000:
+                        if len(viruses) < 5: # makes sure there can only be a maximun of 5 viruses at once
+                            viruses.append(Actor('virus', (random.randint(200,800), random.randint(0,200))))
+                    elif score > 3000 and score < 4000:
+                        if len(viruses) < 6: # makes sure there can only be a maximun of 6 viruses at once
+                            viruses.append(Actor('virus', (random.randint(200,800), random.randint(0,200))))
+                    elif score > 5000:
+                        if len(viruses) < 8: # makes sure there can only be a maximun of 8 viruses at once
+                            viruses.append(Actor('virus', (random.randint(200,800), random.randint(0,200))))
+                            
                 else:
                     gameState == "error"
                     
@@ -521,10 +549,14 @@ def update():
                 Elazers[-1].y = virus.y
                 music.set_volume(0.2)
                 music.play_once("elazer sound")
+        
+        for ammo in ammos:
+            if counter == 2:
+                ammos.append(Actor('ammo', (random.randint(100,900), 100)))
 
 def draw():
     #Draws everything in each game State
-    global gameState,shipX,shipY, lazer, lazers, virus, viruses, Elazer, Elazers, gameTime, endscreen, rulescreen
+    global gameState,shipX,shipY, lazer, lazers, virus, viruses, Elazer, Elazers, gameTime, endscreen, rulescreen, ammo, ammos
     
     if gameState == 'start screen':
         startScreen.draw()
@@ -549,7 +581,10 @@ def draw():
         #draw enemy lazer
         for Elazer in Elazers:
             Elazer.draw()
-    
+        #draw ammo power ups
+        for ammo in ammos:
+            ammo.draw()
+            
     elif gameState == 'rules':
         rulescreen.draw()
         #screen.draw.filled_rect(button9Rect, button9Color)
