@@ -9,6 +9,7 @@ gameState = ''
 lives = 3
 score = 0
 speed = 20
+allowAmmo = False
 
 #all sounds are from http://www.orangefreesounds.com/category/music/
 
@@ -17,6 +18,7 @@ endCount = 5
 delayTime = 1
 futureTime = 5
 counter = 0
+counterAmmo = 0
 print('\r\nCurrent Time - ', time.time())
 futureTime - time.time() + delayTime
 print(futureTime)
@@ -249,7 +251,7 @@ def on_mouse_up(pos, button):
                 gameState = 'characterscreen'
                 #music.play_once('buttonclicked')
                 
-        if button4Rect.collidepoint(pos):
+        elif button4Rect.collidepoint(pos):
             #rules button
             if  button4Value == True:
                 button4Color = 'light green'
@@ -271,6 +273,7 @@ def on_mouse_up(pos, button):
             if  button5Value == True:
                 button5Color = 'light green'
                 button5Value = False
+                
                 lazer.image = "lazer2"
                 ship.image = "spaceship2"
                 gameState = 'game'
@@ -338,7 +341,7 @@ def on_mouse_up(pos, button):
                 gameState = 'game'
                 #music.play_once('buttonclicked')
                 
-    if gameState == "end":
+    elif gameState == "end":
          #PLay again button
         if button2Rect.collidepoint(pos):
             if  button2Value == True:
@@ -390,8 +393,8 @@ def on_mouse_up(pos, button):
                 gameState = 'rules'
                 #music.play_once('buttonclicked')
                 
-    if button9Rect.collidepoint(pos):
-        #leaderboard button
+    elif button9Rect.collidepoint(pos):
+        #exit button
         if button9Rect.collidepoint(pos):
             if  button9Value == True:
                 button9Color = (255, 250, 205)
@@ -408,6 +411,7 @@ def on_mouse_up(pos, button):
 def update():
     global gameState, ship, moveLeft, moveRight, moveUp, moveDown, speed, lazer, lazers, virus, viruses, virusLeft, virusRight
     global score, spawn, counter, endCount, delayTime, futureTime, Elazer, Elazers, lives, gameTime, virusStart, ammo, hearts, ammos
+    global allowAmmo, counterAmmo
     import random
     #moves the ship
     if gameState == 'game':
@@ -428,7 +432,8 @@ def update():
             ship.y = 440
         elif ship.y >700:
             ship.y = 690
-        elif ship.x < 0:
+            
+        if ship.x < 0: #Note for future: don't keep the y and x in the same if statements
             ship.x = 10
         elif ship.x > 1000:
             ship.x = 990
@@ -534,6 +539,7 @@ def update():
         if futureTime < time.time():
             if counter < endCount:
                 counter += 1;
+                counterAmmo += 1
                 gameTime += 1
                 futureTime = time.time() + delayTime
                 
@@ -542,6 +548,8 @@ def update():
                 if counter == 5:
                     counter = 0
                     print("run!")
+                if counterAmmo == 20:
+                    counterAmmo = 0
         for virus in viruses: #took a while but this makes every virus in the list "viruses" shoot and not just one
             if counter == 5:
                 Elazers.append(Actor('elazer'))
@@ -550,10 +558,12 @@ def update():
                 music.set_volume(0.2)
                 music.play_once("elazer sound")
         
-        for ammo in ammos:
-            print(counter)
-            if counter == 2:
-                ammos.append(Actor('ammo', (random.randint(100,900), 100)))
+
+        if counterAmmo % 10 == 0 and allowAmmo:
+            ammos.append(Actor('ammo', (random.randint(100,900), 100)))
+            allowAmmo = False
+        if counterAmmo % 10 != 0:
+            allowAmmo = True
             
 
 def draw():
@@ -562,6 +572,7 @@ def draw():
     
     if gameState == 'start screen':
         startScreen.draw()
+        
         
         
     
@@ -589,7 +600,7 @@ def draw():
             
     elif gameState == 'rules':
         rulescreen.draw()
-        #screen.draw.filled_rect(button9Rect, button9Color)
+        
         
     elif gameState == 'characterscreen':
         characterscreen.draw()
