@@ -10,6 +10,8 @@ lives = 3
 score = 0
 speed = 20
 allowAmmo = False
+allowHeart = False
+ammoAmount = 2
 
 #all sounds are from http://www.orangefreesounds.com/category/music/
 
@@ -18,7 +20,7 @@ endCount = 5
 delayTime = 1
 futureTime = 5
 counter = 0
-counterAmmo = 0
+counterPowerup = 0
 print('\r\nCurrent Time - ', time.time())
 futureTime - time.time() + delayTime
 print(futureTime)
@@ -167,7 +169,7 @@ def startUp():
 
 
 def on_key_down(key):
-    global gameState, ship, moveLeft, moveRight, moveUp, moveDown
+    global gameState, ship, moveLeft, moveRight, moveUp, moveDown, ammoAmount
     #takes player key down input for the ship
     if gameState == 'game':
         if key == key.LEFT:
@@ -184,7 +186,7 @@ def on_key_down(key):
             
     #moved this to on key down instead of update so the player cannot hold down the shoot button
         if key == keys.SPACE:
-            if len(lazers) < 2: #you can only have 5 lazers at once on the screen
+            if len(lazers) < ammoAmount: #you can only have 5 lazers at once on the screen
                 lazers.append(Actor('lazer'))
                 lazers[-1].x = ship.x #we use -1 to take the last element in the list
                 lazers[-1].y = ship.y
@@ -212,7 +214,7 @@ def on_mouse_up(pos, button):
     '''Pygame Special Event Hook - Runs when the mouse button is released'''
     global gameState, lives, score, speed, endCount, delayTime, futureTime, counter, gameTime, gameState
     global virusRight, virusLeft, virusStart, Elazers, lazers, viruses, moveLeft, moveRight, moveDown, moveUp, moveTopLeft
-    global moveTopRight, moveBottomLeft, moveBottomRight, lazer
+    global moveTopRight, moveBottomLeft, moveBottomRight, lazer, allowAmmo, ammoAmount, allowHeart, hearts, ammos, counterPowerup
     import random
     global button1Color
     global button1Value
@@ -273,8 +275,8 @@ def on_mouse_up(pos, button):
             if  button5Value == True:
                 button5Color = 'light green'
                 button5Value = False
-                
-                lazer.image = "lazer2"
+                for lazer in lazers:
+                    lazer.image = "lazer2"
                 ship.image = "spaceship2"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
@@ -282,7 +284,8 @@ def on_mouse_up(pos, button):
             else:
                 button5Color == 'green'
                 button5Value = True
-                lazer.image = "lazer2"
+                for lazer in lazers:
+                    lazer.image = "lazer2"
                 ship.image = "spaceship2"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
@@ -292,7 +295,8 @@ def on_mouse_up(pos, button):
             if  button6Value == True:
                 button6Color = 'light green'
                 button6Value = False
-                lazer.image = "lazer3"
+                for lazer in lazers:
+                    lazer.image = "lazer3"
                 ship.image = "spaceship3"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
@@ -300,7 +304,8 @@ def on_mouse_up(pos, button):
             else:
                 button6Color == 'green'
                 button6Value = True
-                lazer.image = "lazer3"
+                for lazer in lazers:
+                    lazer.image = "lazer3"
                 ship.image = "spaceship3"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
@@ -310,25 +315,28 @@ def on_mouse_up(pos, button):
             if  button7Value == True:
                 button7Color = 'light green'
                 button7Value = False
-                lazer.image = "lazer4"
                 ship.image = "spaceship4"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
+                for lazer in lazers:
+                    lazer.image = "lazer4"
                 
             else:
                 button7Color == 'green'
                 button7Value = True
-                lazer.image = "lazer4"
                 ship.image = "spaceship4"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
+                for lazer in lazers:
+                    lazer.image = "lazer4"
                 
         elif button8Rect.collidepoint(pos):
             # button
             if  button8Value == True:
                 button8Color = 'light green'
                 button8Value = False
-                lazer.image = "lazer"
+                for lazer in lazers:
+                    lazer.image = "lazer"
                 ship.image = "spaceship1"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
@@ -336,7 +344,8 @@ def on_mouse_up(pos, button):
             else:
                 button8Color == 'green'
                 button8Value = True
-                lazer.image = "lazer"
+                for lazer in lazers:
+                    lazer.image = "lazer"
                 ship.image = "spaceship1"
                 gameState = 'game'
                 #music.play_once('buttonclicked')
@@ -353,7 +362,7 @@ def on_mouse_up(pos, button):
                 button2Value = True
                 #music.play_once('buttonclicked')
                 gameState = "start screen"
-                lives = 5
+                lives = 3
                 score = 0
                 speed = 20
                 endCount = 5
@@ -367,6 +376,8 @@ def on_mouse_up(pos, button):
                 lazers = []
                 viruses = []
                 Elazers = []
+                hearts = []
+                ammos = []
                 for i in range(3):
                     viruses.append(Actor('virus', (random.randint(200,800), random.randint(0,200))))
                 moveLeft = False
@@ -378,6 +389,10 @@ def on_mouse_up(pos, button):
                 moveBottomLeft = False
                 moveBottomRight = False
                 ship.pos = (500,500)
+                ammoAmount = 2
+                counterPowerup = 0
+                allowAmmo = False
+                allowHeart = False
                 
     if button3Rect.collidepoint(pos):
         #leaderboard button
@@ -411,7 +426,7 @@ def on_mouse_up(pos, button):
 def update():
     global gameState, ship, moveLeft, moveRight, moveUp, moveDown, speed, lazer, lazers, virus, viruses, virusLeft, virusRight
     global score, spawn, counter, endCount, delayTime, futureTime, Elazer, Elazers, lives, gameTime, virusStart, ammo, hearts, ammos
-    global allowAmmo, counterAmmo
+    global allowAmmo, counterPowerup, allowHeart, ammoAmount
     import random
     #moves the ship
     if gameState == 'game':
@@ -456,7 +471,13 @@ def update():
             if ammo.y > 700:
                 ammos.remove(ammo)
             else:
-                ammo.y += 10
+                ammo.y += 5
+                
+        for heart in hearts:
+            if heart.y > 700:
+                hearts.remove(heart)
+            else:
+                heart.y += 5
                 
         #gets the virus to move side to side
         for virus in viruses:
@@ -534,12 +555,28 @@ def update():
                     lazers.remove(lazer)
                     Elazers.remove(Elazer)
                     break
+        
+        if lives < 5:#makes sure that lives cannot pass 5
+            for heart in hearts:
+                if ship.colliderect(heart):
+                    lives += 1
+                    hearts.remove(heart)
+                    #music.set_volume(0.2)
+                    #music.play_once("powerup")
+        
+        if ammoAmount < 5:
+            for ammo in ammos:
+                if ship.colliderect(ammo):
+                    ammoAmount += 1
+                    ammos.remove(ammo)
+                
+                
                     
         #a time for the game
         if futureTime < time.time():
             if counter < endCount:
                 counter += 1;
-                counterAmmo += 1
+                counterPowerup += 1
                 gameTime += 1
                 futureTime = time.time() + delayTime
                 
@@ -548,8 +585,8 @@ def update():
                 if counter == 5:
                     counter = 0
                     print("run!")
-                if counterAmmo == 20:
-                    counterAmmo = 0
+                if counterPowerup == 30:
+                    counterPowerup = 0
         for virus in viruses: #took a while but this makes every virus in the list "viruses" shoot and not just one
             if counter == 5:
                 Elazers.append(Actor('elazer'))
@@ -558,17 +595,24 @@ def update():
                 music.set_volume(0.2)
                 music.play_once("elazer sound")
         
-
-        if counterAmmo % 10 == 0 and allowAmmo:
-            ammos.append(Actor('ammo', (random.randint(100,900), 100)))
-            allowAmmo = False
-        if counterAmmo % 10 != 0:
-            allowAmmo = True
+        if ammoAmount <5:
+            if counterPowerup % 30 == 0 and allowAmmo:
+                ammos.append(Actor('ammo', (random.randint(100,900), 100)))
+                allowAmmo = False
+            if counterPowerup % 30 != 0:
+                allowAmmo = True
+           
+        if lives < 5:
+            if counterPowerup % 20 == 0 and allowHeart:
+                hearts.append(Actor('heart', (random.randint(100,900), 100)))
+                allowHeart = False
+            if counterPowerup % 20 != 0:
+                allowHeart = True
             
 
 def draw():
     #Draws everything in each game State
-    global gameState,shipX,shipY, lazer, lazers, virus, viruses, Elazer, Elazers, gameTime, endscreen, rulescreen, ammo, ammos
+    global gameState,shipX,shipY, lazer, lazers, virus, viruses, Elazer, Elazers, gameTime, endscreen, rulescreen, ammo, ammos, ammoAmount
     
     if gameState == 'start screen':
         startScreen.draw()
@@ -595,8 +639,14 @@ def draw():
         for Elazer in Elazers:
             Elazer.draw()
         #draw ammo power ups
-        for ammo in ammos:
-            ammo.draw()
+        if ammoAmount <5:
+            for ammo in ammos: #cant have more than 5 shots
+                ammo.draw()
+        
+        #heart powerups
+        if lives <5: #no more heart power ups if the user has 5(max)
+            for heart in hearts:
+                heart.draw()
             
     elif gameState == 'rules':
         rulescreen.draw()
