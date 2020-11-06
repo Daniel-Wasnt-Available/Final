@@ -12,4 +12,4 @@ for line, line in enumerate(leaderboard):
         print(line)
         
 def draw():
-    screen.draw.text (str((line[1])), center=(WIDTH/2, 300), color="purple", fontsize = 110)
+    screen.draw.text (str((line)), center=(WIDTH/2, 300), color="purple", fontsize = 110)
