@@ -1,0 +1,2 @@
+ 2020-11-06 14:25:26,742 - DEBUG - Program beginning
+ 2020-11-06 14:25:26,742 - DEBUG - Reading in fruit.txt
